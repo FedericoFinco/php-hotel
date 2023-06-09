@@ -51,8 +51,28 @@
     ?>
 
     <form action="hotel.php">
-    <button type="submit"></button>
+        <label for="">votazione minima</label>
+        <select name="minimumVote" id="">
+            <option value=0>qualsiasi</option>
+            <option value=1>1</option>
+            <option value=2>2</option>
+            <option value=3>3</option>
+            <option value=4>4</option>
+            <option value=5>5</option>
+        </select>
+        <label for="">parcheggio presente</label>
+        <select name="parkingChoice" id="">
+            <option value="0">qualsiasi</option>
+            <option value=asd>si</option>
+            <option value="">no</option> 
+            <!-- da chiedere a luca per dare il value booleano -->
+        </select>
+        <button type="submit"> ricerca</button>
     </form>
+    <?php $parkingSelect= $_GET["parkingChoice"];
+        $requestedVote= $_GET["minimumVote"];
+    ?>
+    <h1><?php echo $parkingSelect  ?></h1>
     <table class="table">
   <thead>
     <tr>
@@ -64,16 +84,40 @@
     </tr>
   </thead>
   <tbody>
-    <?php 
-    foreach ($hotels as $hotel){?>
-                <tr>
-                <th scope="row"><?php echo $hotel["name"] ?></th>
-                <td><?php echo $hotel["description"] ?></td>
-                <td><?php ($hotel["parking"])? $park="si": $park="no"; echo $park ?></td>
-                <td><?php echo $hotel["vote"] ?></td>
-                <td><?php echo $hotel["distance_to_center"] ?></td>
-                </tr>
-    <?php } ?>
+
+    <?php
+     $filteredHotels=[];
+     foreach ($hotels as $hotel) {
+        if ($hotel["vote"]>=($requestedVote)){
+            if ($parkingSelect=="asd") {
+                if($hotel["parking"]==true){
+                    $filteredHotels[]=$hotel;
+                }
+            };
+            if ($parkingSelect=="") {
+                if($hotel["parking"]==false){
+                    $filteredHotels[]=$hotel;
+                }
+            };
+            if ($parkingSelect=="0") {
+                
+                    $filteredHotels[]=$hotel;
+                
+            };           
+        }
+    } 
+
+    foreach ($filteredHotels as $hotelFiltered){?>
+            <tr>
+            <th scope="row"><?php echo $hotelFiltered["name"] ?></th>
+            <td><?php echo $hotelFiltered["description"] ?></td>
+            <td><?php ($hotelFiltered["parking"])? $park="si": $park="no"; echo $park ?></td>
+            <td><?php echo $hotelFiltered["vote"] ?></td>
+            <td><?php echo $hotelFiltered["distance_to_center"] ?></td>
+            </tr>
+            <?php }?>
+            </tbody>
+  </table>
     
 
     <!-- <?php
@@ -92,7 +136,6 @@
     ?> -->
 
 
-</table>
 
 
 </body>
